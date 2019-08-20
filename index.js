@@ -13,8 +13,9 @@ const validateToken = require("./middleware/validateHeader");
 app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
+app.use(validateToken);
 
-app.get("/movie", validateToken, (req, res) => {
+app.get("/movie", (req, res) => {
   const { genre, country, avg_vote } = req.query;
   let movieData = [...MOVIES];
 
@@ -34,7 +35,7 @@ app.get("/movie", validateToken, (req, res) => {
   }
   if (avg_vote) {
     movieData = movieData.filter(
-      movie => movie.avg_vote >= parseFloat(avg_vote)
+      movie => Number(movie.avg_vote) >= Number(parseFloat(avg_vote))
     );
   }
   res.json(movieData);
